@@ -11,12 +11,18 @@ const backend_base = 'noflight.monad.fi/backend'
 
 // Change this to your own implementation
 const generateCommands = (gameState: NoPlaneState) => {
-  const { aircrafts } = gameState
+  const { aircrafts, airports } = gameState
   const commands = []
-
-  for (const { id, direction } of aircrafts) {
-    commands.push(`HEAD ${id} ${normalizeHeading(direction)}`) // Go loopy loop
+  console.log(airports);
+  const {position, direction, id} = aircrafts[0]
+  
+  if (position.x === -30 && direction != 270){
+    commands.push(`HEAD ${id} ${normalizeHeading(direction - 20)}`)
   }
+
+/*   for (const { id, direction } of aircrafts) {
+    commands.push(`HEAD ${id} ${normalizeHeading(direction)}`) // Go loopy loop
+  } */
 
   return commands
 }
