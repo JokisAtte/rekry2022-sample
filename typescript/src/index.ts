@@ -15,7 +15,7 @@ const generateCommands = (gameState: NoPlaneState) => {
   const commands = []
 
   for (const { id, direction } of aircrafts) {
-    commands.push(`HEAD ${id} ${normalizeHeading(direction + 20)}`) // Go loopy loop
+    commands.push(`HEAD ${id} ${normalizeHeading(direction)}`) // Go loopy loop
   }
 
   return commands
