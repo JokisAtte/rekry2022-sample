@@ -9,13 +9,18 @@ import { message } from './utils/message'
 const frontend_base = 'noflight.monad.fi'
 const backend_base = 'noflight.monad.fi/backend'
 
-// Change this to your own implementation
+let degreesToTurn = 90
+
 const generateCommands = (gameState: NoPlaneState) => {
-  const { aircrafts } = gameState
+  const {id, direction, position} = gameState.aircrafts[0]
   const commands = []
 
-  for (const { id, direction } of aircrafts) {
-    commands.push(`HEAD ${id} ${normalizeHeading(direction)}`) // Go loopy loop
+  if (position.y > 35 && direction != 0){
+    const turn = degreesToTurn > 20 ? 20 : degreesToTurn
+    commands.push(`HEAD ${id} ${normalizeHeading(direction - turn)}`)
+    degreesToTurn = degreesToTurn - turn
+  } else {
+    commands.push(`HEAD ${id} ${normalizeHeading(direction)}`)
   }
 
   return commands
