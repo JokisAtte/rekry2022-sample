@@ -12,11 +12,21 @@ const backend_base = 'noflight.monad.fi/backend'
 const generateCommands = (gameState: NoPlaneState) => {
   const { aircrafts } = gameState
   const commands = []
+  const { position: airportPosition } = gameState.airports[0]
 
-  for (const { id, direction } of aircrafts) {
-    commands.push(`HEAD ${id} ${normalizeHeading(direction)}`)
+  for (const { id, direction, position: planePosition } of aircrafts) {
+    // Onko kone maalin alla?
+    const maxTurnPerTick = 20
+    if (planePosition.x > airportPosition.x - 20) {
+      if (direction != 90 && direction + maxTurnPerTick < 90) {
+        commands.push(`HEAD ${id} ${normalizeHeading(direction + maxTurnPerTick)}`)
+      } else if (direction < 90) {
+        commands.push(`HEAD ${id} ${normalizeHeading(direction + 10)}`)
+      } else {
+        commands.push(`HEAD ${id} ${normalizeHeading(direction)}`)
+      }
+    }
   }
-
   return commands
 }
 
