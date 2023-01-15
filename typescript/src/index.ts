@@ -9,20 +9,29 @@ import { message } from './utils/message'
 const frontend_base = 'noflight.monad.fi'
 const backend_base = 'noflight.monad.fi/backend'
 
-// Change this to your own implementation
-const generateCommands = (gameState: NoPlaneState) => {
-  const { aircrafts, airports } = gameState
-  const commands = []
-  console.log(airports);
-  const {position, direction, id} = aircrafts[0]
-  
-  if (position.x === -30 && direction != 270){
-    commands.push(`HEAD ${id} ${normalizeHeading(direction - 20)}`)
-  }
+let firstTurn = 90
+let secondTurn = 270
 
-/*   for (const { id, direction } of aircrafts) {
-    commands.push(`HEAD ${id} ${normalizeHeading(direction)}`) // Go loopy loop
-  } */
+const generateCommands = (gameState: NoPlaneState) => {
+  const {id, direction, position: planePosition} = gameState.aircrafts[0]
+  const {position : airfieldPosition } = gameState.airports[0]
+  const commands = []
+
+  const maxTurnPerTick = 20
+  console.log(direction, planePosition)
+  if (planePosition.x < airfieldPosition.x - 10 && firstTurn !== 0){
+    console.log("alas alas") //Lisää tsekki että mennyt alle alkuperäisen y:n
+    const turn = firstTurn > maxTurnPerTick ? maxTurnPerTick : firstTurn
+    commands.push(`HEAD ${id} ${normalizeHeading(direction + turn)}`)
+    firstTurn = firstTurn - turn
+  }
+  if (firstTurn === 0 && commands.length === 0){
+    console.log("ylös ylös");
+     // keksi ehdot millä päästään hienosti seuraavaa käännökseen
+    const turn = secondTurn > maxTurnPerTick ? maxTurnPerTick : secondTurn
+    commands.push(`HEAD ${id} ${normalizeHeading(direction - turn)}`)
+    secondTurn = secondTurn - turn
+  }
 
   return commands
 }
