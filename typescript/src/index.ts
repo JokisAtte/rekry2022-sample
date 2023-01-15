@@ -9,13 +9,12 @@ import { message } from './utils/message'
 const frontend_base = 'noflight.monad.fi'
 const backend_base = 'noflight.monad.fi/backend'
 
-// Change this to your own implementation
 const generateCommands = (gameState: NoPlaneState) => {
   const { aircrafts } = gameState
   const commands = []
 
   for (const { id, direction } of aircrafts) {
-    commands.push(`HEAD ${id} ${normalizeHeading(direction)}`) // Go loopy loop
+    commands.push(`HEAD ${id} ${normalizeHeading(direction)}`)
   }
 
   return commands
