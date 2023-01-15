@@ -18,16 +18,12 @@ const generateCommands = (gameState: NoPlaneState) => {
   const commands = []
 
   const maxTurnPerTick = 20
-  console.log(direction, planePosition)
   if (planePosition.x < airfieldPosition.x - 10 && firstTurn !== 0){
-    console.log("alas alas") //Lisää tsekki että mennyt alle alkuperäisen y:n
     const turn = firstTurn > maxTurnPerTick ? maxTurnPerTick : firstTurn
     commands.push(`HEAD ${id} ${normalizeHeading(direction + turn)}`)
     firstTurn = firstTurn - turn
   }
   if (firstTurn === 0 && commands.length === 0){
-    console.log("ylös ylös");
-     // keksi ehdot millä päästään hienosti seuraavaa käännökseen
     const turn = secondTurn > maxTurnPerTick ? maxTurnPerTick : secondTurn
     commands.push(`HEAD ${id} ${normalizeHeading(direction - turn)}`)
     secondTurn = secondTurn - turn
