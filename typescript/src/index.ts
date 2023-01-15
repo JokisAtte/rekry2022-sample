@@ -12,11 +12,14 @@ const backend_base = 'noflight.monad.fi/backend'
 let degreesToTurn = 90
 
 const generateCommands = (gameState: NoPlaneState) => {
-  const {id, direction, position} = gameState.aircrafts[0]
+  const {id, direction, position: planePosition} = gameState.aircrafts[0]
+  const {position: airportPosition} = gameState.airports[0]
   const commands = []
+  const maxTurnPerTick = 20
+  
 
-  if (position.y > 35 && direction != 0){
-    const turn = degreesToTurn > 20 ? 20 : degreesToTurn
+  if (planePosition.y > airportPosition.y - 20 && direction != 0){
+    const turn = degreesToTurn > maxTurnPerTick ? maxTurnPerTick : degreesToTurn
     commands.push(`HEAD ${id} ${normalizeHeading(direction - turn)}`)
     degreesToTurn = degreesToTurn - turn
   } else {
