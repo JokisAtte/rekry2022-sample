@@ -15,7 +15,6 @@ const generateCommands = (gameState: NoPlaneState) => {
   const { position: airportPosition } = gameState.airports[0]
 
   for (const { id, direction, position: planePosition } of aircrafts) {
-    // Onko kone maalin alla?
     const maxTurnPerTick = 20
     if (planePosition.x > airportPosition.x - 20) {
       if (direction != 90 && direction + maxTurnPerTick < 90) {
