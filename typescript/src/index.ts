@@ -13,17 +13,17 @@ let firstTurn = 90
 let secondTurn = 270
 
 const generateCommands = (gameState: NoPlaneState) => {
-  const {id, direction, position: planePosition} = gameState.aircrafts[0]
-  const {position : airfieldPosition } = gameState.airports[0]
+  const { id, direction, position: planePosition } = gameState.aircrafts[0]
+  const { position: airfieldPosition } = gameState.airports[0]
   const commands = []
 
   const maxTurnPerTick = 20
-  if (planePosition.x < airfieldPosition.x - 10 && firstTurn !== 0){
+  if (planePosition.x < airfieldPosition.x - 10 && firstTurn !== 0) {
     const turn = firstTurn > maxTurnPerTick ? maxTurnPerTick : firstTurn
     commands.push(`HEAD ${id} ${normalizeHeading(direction + turn)}`)
     firstTurn = firstTurn - turn
   }
-  if (firstTurn === 0 && commands.length === 0){
+  if (firstTurn === 0 && commands.length === 0) {
     const turn = secondTurn > maxTurnPerTick ? maxTurnPerTick : secondTurn
     commands.push(`HEAD ${id} ${normalizeHeading(direction - turn)}`)
     secondTurn = secondTurn - turn
