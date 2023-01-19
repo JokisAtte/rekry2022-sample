@@ -9,12 +9,62 @@ import { message } from './utils/message'
 const frontend_base = 'noflight.monad.fi'
 const backend_base = 'noflight.monad.fi/backend'
 
+let plane1Turns = [45, 45]
+let plane2Turns = [45, 45]
+let plane3Turns = [270, 90]
+const maxTurnPerTick = 20
+
 const generateCommands = (gameState: NoPlaneState) => {
-  const { aircrafts } = gameState
+  const { aircrafts, airports } = gameState
   const commands = []
 
-  for (const { id, direction } of aircrafts) {
-    commands.push(`HEAD ${id} ${normalizeHeading(direction)}`)
+  for (const { id, direction, position: planePosition, destination } of aircrafts) {
+    if (id === '3')
+      if (plane3Turns[0] !== 0) {
+        const turn = plane3Turns[0] > maxTurnPerTick ? maxTurnPerTick : plane3Turns[0]
+        commands.push(`HEAD ${id} ${normalizeHeading(direction + turn)}`)
+        plane3Turns[0] = plane3Turns[0] - turn
+      } else if (plane3Turns[0] === 0 && plane3Turns[1] !== 0 && planePosition.x < airports[0].position.x + 10) {
+        const turn = plane3Turns[1] > maxTurnPerTick ? maxTurnPerTick : plane3Turns[1]
+        commands.push(`HEAD ${id} ${normalizeHeading(direction + turn)}`)
+        plane3Turns[1] = plane3Turns[1] - turn
+      } else {
+        commands.push(`HEAD ${id} ${normalizeHeading(direction)}`)
+      }
+    if (id === '1') {
+      if (plane1Turns[0] !== 0) {
+        const turn = plane1Turns[0] > maxTurnPerTick ? maxTurnPerTick : plane1Turns[0]
+        commands.push(`HEAD ${id} ${normalizeHeading(direction + turn)}`)
+        plane1Turns[0] = plane1Turns[0] - turn
+      } else if (
+        plane1Turns[0] === 0 &&
+        plane1Turns[1] !== 0 &&
+        planePosition.x > airports.filter((a) => a.name === destination)[0].position.x
+      ) {
+        const turn = plane1Turns[1] > maxTurnPerTick ? maxTurnPerTick : plane1Turns[1]
+        commands.push(`HEAD ${id} ${normalizeHeading(direction - turn)}`)
+        plane1Turns[1] = plane1Turns[1] - turn
+      } else {
+        commands.push(`HEAD ${id} ${normalizeHeading(direction)}`)
+      }
+    }
+    if (id === '2') {
+      if (plane2Turns[0] !== 0) {
+        const turn = plane2Turns[0] > maxTurnPerTick ? maxTurnPerTick : plane2Turns[0]
+        commands.push(`HEAD ${id} ${normalizeHeading(direction + turn)}`)
+        plane2Turns[0] = plane2Turns[0] - turn
+      } else if (
+        plane2Turns[0] === 0 &&
+        plane2Turns[1] !== 0 &&
+        planePosition.x > airports.filter((a) => a.name === destination)[0].position.x
+      ) {
+        const turn = plane2Turns[1] > maxTurnPerTick ? maxTurnPerTick : plane2Turns[1]
+        commands.push(`HEAD ${id} ${normalizeHeading(direction - turn)}`)
+        plane2Turns[1] = plane2Turns[1] - turn
+      } else {
+        commands.push(`HEAD ${id} ${normalizeHeading(direction)}`)
+      }
+    }
   }
 
   return commands
