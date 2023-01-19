@@ -9,24 +9,18 @@ import { message } from './utils/message'
 const frontend_base = 'noflight.monad.fi'
 const backend_base = 'noflight.monad.fi/backend'
 
+let loop = 340
+const maxTurnPerTick = 20
+
 const generateCommands = (gameState: NoPlaneState) => {
   const { aircrafts } = gameState
+  const { id, direction } = aircrafts[0]
   const commands = []
-  const { position: airportPosition } = gameState.airports[0]
+  loop >= 0
+    ? commands.push(`HEAD ${id} ${normalizeHeading(direction - maxTurnPerTick)}`)
+    : commands.push(`HEAD ${id} ${normalizeHeading(direction)}`)
+  loop -= maxTurnPerTick
 
-  for (const { id, direction, position: planePosition } of aircrafts) {
-    // Onko kone maalin alla?
-    const maxTurnPerTick = 20
-    if (planePosition.x > airportPosition.x - 20) {
-      if (direction != 90 && direction + maxTurnPerTick < 90) {
-        commands.push(`HEAD ${id} ${normalizeHeading(direction + maxTurnPerTick)}`)
-      } else if (direction < 90) {
-        commands.push(`HEAD ${id} ${normalizeHeading(direction + 10)}`)
-      } else {
-        commands.push(`HEAD ${id} ${normalizeHeading(direction)}`)
-      }
-    }
-  }
   return commands
 }
 
